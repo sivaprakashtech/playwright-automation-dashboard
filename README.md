@@ -144,60 +144,31 @@
 
 ## 📸 Screenshots
 
-<details>
-<summary><strong>🔐 Login Page</strong></summary>
-<p align="center"><img src="docs/screenshots/login.png" alt="Login" width="90%" /></p>
-</details>
+![Dashboard](screenshots/dashboard-overview.png)
 
-<details>
-<summary><strong>📊 Dashboard</strong></summary>
-<p align="center"><img src="docs/screenshots/dashboard.png" alt="Dashboard" width="90%" /></p>
-</details>
+![Projects](screenshots/projects-management.png)
 
-<details>
-<summary><strong>📁 Projects</strong></summary>
-<p align="center"><img src="docs/screenshots/projects.png" alt="Projects" width="90%" /></p>
-</details>
+![Test Suites](screenshots/test-suites.png)
 
-<details>
-<summary><strong>🧪 Test Suites</strong></summary>
-<p align="center"><img src="docs/screenshots/testsuites.png" alt="Test Suites" width="90%" /></p>
-</details>
+![Test Cases](screenshots/test-cases.png)
 
-<details>
-<summary><strong>📝 Test Cases</strong></summary>
-<p align="center"><img src="docs/screenshots/testcases.png" alt="Test Cases" width="90%" /></p>
-</details>
+![Execution Center](screenshots/execution-center.png)
 
-<details>
-<summary><strong>▶️ Executions</strong></summary>
-<p align="center"><img src="docs/screenshots/executions.png" alt="Executions" width="90%" /></p>
-</details>
+![Analytics](screenshots/analytics-dashboard.png)
 
-<details>
-<summary><strong>📈 Analytics</strong></summary>
-<p align="center"><img src="docs/screenshots/analytics.png" alt="Analytics" width="90%" /></p>
-</details>
+![Reports](screenshots/reports-dashboard.png)
 
-<details>
-<summary><strong>📋 Reports</strong></summary>
-<p align="center"><img src="docs/screenshots/reports.png" alt="Reports" width="90%" /></p>
-</details>
+![Screenshots](screenshots/screenshots-gallery.png)
 
-<details>
-<summary><strong>⏰ Scheduler</strong></summary>
-<p align="center"><img src="docs/screenshots/scheduler.png" alt="Scheduler" width="90%" /></p>
-</details>
+![Videos](screenshots/video-recordings.png)
 
-<details>
-<summary><strong>👥 Users</strong></summary>
-<p align="center"><img src="docs/screenshots/users.png" alt="Users" width="90%" /></p>
-</details>
+![Scheduler](screenshots/scheduler.png)
 
-<details>
-<summary><strong>⚙️ Settings</strong></summary>
-<p align="center"><img src="docs/screenshots/settings.png" alt="Settings" width="90%" /></p>
-</details>
+![Environments](screenshots/environments.png)
+
+![Settings](screenshots/settings.png)
+
+![Login](screenshots/Login Page.png)
 
 ---
 
