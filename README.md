@@ -267,31 +267,31 @@ playwright-automation-dashboard/
 ```
 ## 📸 Screenshots
 
-![Dashboard](screenshots/dashboard-overview.png)
+![Dashboard](docs/screenshots/dashboard-overview.png)
 
-![Projects](screenshots/projects-management.png)
+![Projects](docs/screenshots/projects-management.png)
 
-![Test Suites](screenshots/test-suites.png)
+![Test Suites](docs/screenshots/test-suites.png)
 
-![Test Cases](screenshots/test-cases.png)
+![Test Cases](docs/screenshots/test-cases.png)
 
-![Execution Center](screenshots/execution-center.png)
+![Execution Center](docs/screenshots/execution-center.png)
 
-![Analytics](screenshots/analytics-dashboard.png)
+![Analytics](docs/screenshots/analytics-dashboard.png)
 
-![Reports](screenshots/reports-dashboard.png)
+![Reports](docs/screenshots/reports-dashboard.png)
 
-![Screenshots](screenshots/screenshots-gallery.png)
+![Screenshots](docs/screenshots/screenshots-gallery.png)
 
-![Videos](screenshots/video-recordings.png)
+![Videos](docs/screenshots/video-recordings.png)
 
-![Scheduler](screenshots/scheduler.png)
+![Scheduler](docs/screenshots/scheduler.png)
 
-![Environments](screenshots/environments.png)
+![Environments](docs/screenshots/environments.png)
 
-![Settings](screenshots/settings.png)
+![Settings](docs/screenshots/settings.png)
 
-![Login](screenshots/Login Page.png)
+![Login](docs/screenshots/Login%20Page.png)
 
 ---
 ---
