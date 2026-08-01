@@ -142,35 +142,7 @@
 
 ---
 
-## 📸 Screenshots
 
-![Dashboard](screenshots/dashboard-overview.png)
-
-![Projects](screenshots/projects-management.png)
-
-![Test Suites](screenshots/test-suites.png)
-
-![Test Cases](screenshots/test-cases.png)
-
-![Execution Center](screenshots/execution-center.png)
-
-![Analytics](screenshots/analytics-dashboard.png)
-
-![Reports](screenshots/reports-dashboard.png)
-
-![Screenshots](screenshots/screenshots-gallery.png)
-
-![Videos](screenshots/video-recordings.png)
-
-![Scheduler](screenshots/scheduler.png)
-
-![Environments](screenshots/environments.png)
-
-![Settings](screenshots/settings.png)
-
-![Login](screenshots/Login Page.png)
-
----
 
 ## 🛠 Tech Stack
 
@@ -293,7 +265,35 @@ playwright-automation-dashboard/
 ├── docker-compose.yml       # Local deployment
 └── README.md
 ```
+## 📸 Screenshots
 
+![Dashboard](screenshots/dashboard-overview.png)
+
+![Projects](screenshots/projects-management.png)
+
+![Test Suites](screenshots/test-suites.png)
+
+![Test Cases](screenshots/test-cases.png)
+
+![Execution Center](screenshots/execution-center.png)
+
+![Analytics](screenshots/analytics-dashboard.png)
+
+![Reports](screenshots/reports-dashboard.png)
+
+![Screenshots](screenshots/screenshots-gallery.png)
+
+![Videos](screenshots/video-recordings.png)
+
+![Scheduler](screenshots/scheduler.png)
+
+![Environments](screenshots/environments.png)
+
+![Settings](screenshots/settings.png)
+
+![Login](screenshots/Login Page.png)
+
+---
 ---
 
 ## ☁️ Deployment
