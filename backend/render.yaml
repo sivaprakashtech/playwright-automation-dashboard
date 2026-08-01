@@ -1,0 +1,24 @@
+# Render Blueprint - Backend Service
+services:
+  - type: web
+    name: playwright-dashboard-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app --bind 0.0.0.0:$PORT --workers 4 --timeout 120
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite:///instance/dashboard.db
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+    disk:
+      name: dashboard-data
+      mountPath: /opt/render/project/src/instance
+      sizeGB: 1
+    healthCheckPath: /health
+    autoDeploy: true

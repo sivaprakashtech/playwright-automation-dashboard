@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Build outputs
+frontend/dist/
+backend/instance/
+*.pyc
+__pycache__/
+*.egg-info/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Storage (dev)
+backend/storage/reports/*
+backend/storage/screenshots/*
+backend/storage/videos/*
+backend/storage/logs/*
+!backend/storage/**/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+venv/
+.venv/
+*.egg
+dist/
+build/
+
+# Testing
+coverage/
+.pytest_cache/
+htmlcov/

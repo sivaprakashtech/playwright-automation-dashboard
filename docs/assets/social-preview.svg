@@ -1,0 +1,18 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="640" fill="#0f172a"/>
+  <circle cx="250" cy="320" r="350" fill="#6366f1" opacity="0.08"/>
+  <circle cx="1030" cy="320" r="300" fill="#3b82f6" opacity="0.06"/>
+  <!-- Logo -->
+  <rect x="540" y="200" width="52" height="52" rx="13" fill="url(#spG)"/>
+  <path d="M566 215l-7 18h3l2-4h7l2 4h3l-7-18h-3zm-1 11l3-7 3 7h-6z" fill="white"/>
+  <!-- Title -->
+  <text x="640" y="305" text-anchor="middle" fill="white" font-family="Inter, system-ui" font-size="38" font-weight="800">Playwright Dashboard</text>
+  <text x="640" y="345" text-anchor="middle" fill="#94a3b8" font-family="Inter, system-ui" font-size="16">Enterprise QA Automation Platform</text>
+  <!-- Features -->
+  <text x="640" y="420" text-anchor="middle" fill="#64748b" font-family="Inter" font-size="14">Test Management • Execution • Analytics • Reports • Screenshots • Video • Scheduling</text>
+  <!-- Tech -->
+  <text x="640" y="500" text-anchor="middle" fill="#475569" font-family="Inter" font-size="13">React • TypeScript • Flask • Tailwind • Playwright • Docker</text>
+  <defs>
+    <linearGradient id="spG" x1="0" y1="0" x2="52" y2="52"><stop stop-color="#6366f1"/><stop offset="1" stop-color="#3b82f6"/></linearGradient>
+  </defs>
+</svg>
