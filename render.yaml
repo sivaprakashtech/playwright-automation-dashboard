@@ -1,17 +1,16 @@
-# Render Blueprint - Full Stack Deployment
-# Deploys backend + builds frontend into static/
+# Render Blueprint - Full Stack (React + Flask)
+# No rootDir: runs from repository root so both frontend/ and backend/ are accessible
 services:
   - type: web
     name: playwright-dashboard
     runtime: python
-    rootDir: backend
+    plan: free
     buildCommand: |
-      pip install -r requirements.txt &&
-      cd ../frontend &&
-      npm ci &&
-      npm run build &&
+      cd backend && pip install -r requirements.txt &&
+      cd ../frontend && npm ci && npm run build &&
+      rm -rf ../backend/static &&
       cp -r dist ../backend/static
-    startCommand: gunicorn run:app --bind 0.0.0.0:$PORT --workers 4 --timeout 120
+    startCommand: cd backend && gunicorn run:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
     envVars:
       - key: FLASK_ENV
         value: production
@@ -19,12 +18,10 @@ services:
         generateValue: true
       - key: JWT_SECRET_KEY
         generateValue: true
-      - key: DATABASE_URL
-        value: sqlite:///instance/dashboard.db
       - key: PYTHON_VERSION
         value: "3.11.0"
       - key: NODE_VERSION
-        value: "18.19.0"
+        value: "18"
     disk:
       name: dashboard-data
       mountPath: /opt/render/project/src/backend/instance

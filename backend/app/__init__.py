@@ -16,13 +16,22 @@ migrate = Migrate()
 
 logger = logging.getLogger(__name__)
 
+# Resolve the static folder path: backend/static
+# This is where the React build (frontend/dist) gets copied during deployment
+_basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+_static_folder = os.path.join(_basedir, 'static')
+
 
 def create_app(config_name: str = None) -> Flask:
     """Create and configure the Flask application."""
     if config_name is None:
         config_name = os.environ.get('FLASK_ENV', 'development')
 
-    app = Flask(__name__)
+    # Initialize Flask — disable built-in static serving so our catch-all handles everything
+    app = Flask(
+        __name__,
+        static_folder=None,  # We serve static files manually in the catch-all route
+    )
     app.config.from_object(config_map[config_name])
 
     # Initialize extensions
@@ -57,16 +66,38 @@ def create_app(config_name: str = None) -> Flask:
     ]:
         os.makedirs(dir_path, exist_ok=True)
 
-    os.makedirs(os.path.join(os.path.dirname(__file__), '..', 'instance'), exist_ok=True)
+    os.makedirs(os.path.join(_basedir, 'instance'), exist_ok=True)
 
-    # Register all blueprints
+    # Register all API blueprints
     _register_blueprints(app)
 
-    # Register health check (no auth)
+    # Health check (no auth, highest priority)
     @app.route('/health')
     def health_check():
         from flask import jsonify as jf
         return jf({'status': 'healthy', 'service': 'playwright-dashboard'}), 200
+
+    # SPA catch-all: serve index.html for any non-API, non-file route
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def serve_react(path):
+        """Serve React SPA. Static files are served by Flask's built-in static handler."""
+        from flask import send_from_directory
+        # If the path matches an actual file in static/, serve it
+        if path and os.path.isfile(os.path.join(_static_folder, path)):
+            return send_from_directory(_static_folder, path)
+        # Otherwise serve index.html for React Router
+        index = os.path.join(_static_folder, 'index.html')
+        if os.path.isfile(index):
+            return send_from_directory(_static_folder, 'index.html')
+        # Development mode: no static build available
+        from flask import jsonify
+        return jsonify({
+            'message': 'Playwright Dashboard API',
+            'health': '/health',
+            'api': '/api/',
+            'note': 'Frontend not built. Run: cd frontend && npm run build && copy dist to backend/static',
+        }), 200
 
     # Create tables and seed data
     with app.app_context():
@@ -83,7 +114,6 @@ def _configure_jwt(app: Flask) -> None:
 
     @jwt.token_in_blocklist_loader
     def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
-        """Check if a JWT token has been revoked (logout)."""
         from app.models.token_blocklist import TokenBlocklist
         jti = jwt_payload['jti']
         token = TokenBlocklist.query.filter_by(jti=jti).first()
@@ -91,39 +121,23 @@ def _configure_jwt(app: Flask) -> None:
 
     @jwt.revoked_token_loader
     def revoked_token_callback(jwt_header, jwt_payload):
-        """Handle revoked token access."""
         from flask import jsonify
-        return jsonify({
-            'error': 'Token Revoked',
-            'message': 'Token has been revoked. Please login again.',
-        }), 401
+        return jsonify({'error': 'Token Revoked', 'message': 'Please login again.'}), 401
 
     @jwt.expired_token_loader
     def expired_token_callback(jwt_header, jwt_payload):
-        """Handle expired token."""
         from flask import jsonify
-        return jsonify({
-            'error': 'Token Expired',
-            'message': 'Access token has expired. Use refresh token to get a new one.',
-        }), 401
+        return jsonify({'error': 'Token Expired', 'message': 'Use refresh token.'}), 401
 
     @jwt.invalid_token_loader
     def invalid_token_callback(error):
-        """Handle invalid token."""
         from flask import jsonify
-        return jsonify({
-            'error': 'Invalid Token',
-            'message': 'Token verification failed',
-        }), 401
+        return jsonify({'error': 'Invalid Token', 'message': 'Verification failed.'}), 401
 
     @jwt.unauthorized_loader
     def missing_token_callback(error):
-        """Handle missing token."""
         from flask import jsonify
-        return jsonify({
-            'error': 'Authorization Required',
-            'message': 'Request does not contain an access token',
-        }), 401
+        return jsonify({'error': 'Authorization Required', 'message': 'Token missing.'}), 401
 
 
 def _register_blueprints(app: Flask) -> None:
@@ -169,131 +183,35 @@ def _seed_default_data() -> None:
     from app.models.environment import Environment
     import json
 
-    # --- Users ---
     if not User.query.filter_by(username='admin').first():
-        admin = User(
-            username='admin',
-            email='siva0225@gmail.com',
-            role='admin',
-            full_name='System Administrator',
-        )
+        admin = User(username='admin', email='siva0225@gmail.com', role='admin', full_name='System Administrator')
         admin.set_password('1231231234')
         db.session.add(admin)
 
-        qa_user = User(
-            username='qa_engineer',
-            email='qa@dashboard.com',
-            role='qa_engineer',
-            full_name='QA Engineer',
-        )
+        qa_user = User(username='qa_engineer', email='qa@dashboard.com', role='qa_engineer', full_name='QA Engineer')
         qa_user.set_password('1231231234')
         db.session.add(qa_user)
 
-        qa_lead = User(
-            username='qa_lead',
-            email='lead@dashboard.com',
-            role='admin',
-            full_name='QA Lead',
-        )
+        qa_lead = User(username='qa_lead', email='lead@dashboard.com', role='admin', full_name='QA Lead')
         qa_lead.set_password('1231231234')
         db.session.add(qa_lead)
 
-    # --- Settings ---
     if not Settings.query.first():
-        settings = Settings(
-            theme='dark',
-            execution_path='./tests',
-            parallel_workers=4,
-            timeout=30000,
-            retries=1,
-            default_browser='chromium',
-            headless=True,
-            screenshot_on_failure=True,
-            video_recording=False,
-            trace_recording=False,
-            base_url='http://localhost:3000',
-            report_format='html',
-        )
-        db.session.add(settings)
+        db.session.add(Settings(theme='dark', execution_path='./tests', parallel_workers=4, timeout=30000, retries=1, default_browser='chromium', headless=True, screenshot_on_failure=True, video_recording=False, trace_recording=False, base_url='http://localhost:3000', report_format='html'))
 
-    # --- Browsers ---
     if not Browser.query.first():
-        browsers = [
-            Browser(
-                name='chromium',
-                display_name='Chromium (Chrome/Edge)',
-                engine='chromium',
-                version='120.0',
-                is_installed=True,
-                is_active=True,
-                channel='stable',
-            ),
-            Browser(
-                name='firefox',
-                display_name='Firefox',
-                engine='firefox',
-                version='121.0',
-                is_installed=True,
-                is_active=True,
-                channel='stable',
-            ),
-            Browser(
-                name='webkit',
-                display_name='WebKit (Safari)',
-                engine='webkit',
-                version='17.4',
-                is_installed=True,
-                is_active=True,
-                channel='stable',
-            ),
-            Browser(
-                name='chrome-canary',
-                display_name='Chrome Canary',
-                engine='chromium',
-                version='122.0',
-                is_installed=False,
-                is_active=False,
-                channel='canary',
-            ),
-        ]
-        db.session.add_all(browsers)
+        db.session.add_all([
+            Browser(name='chromium', display_name='Chromium (Chrome/Edge)', engine='chromium', version='120.0', is_installed=True, is_active=True, channel='stable'),
+            Browser(name='firefox', display_name='Firefox', engine='firefox', version='121.0', is_installed=True, is_active=True, channel='stable'),
+            Browser(name='webkit', display_name='WebKit (Safari)', engine='webkit', version='17.4', is_installed=True, is_active=True, channel='stable'),
+        ])
 
-    # --- Environments ---
     if not Environment.query.first():
-        environments = [
-            Environment(
-                name='development',
-                display_name='Development',
-                base_url='http://localhost:3000',
-                description='Local development environment',
-                is_active=True,
-                variables=json.dumps({'DEBUG': 'true', 'LOG_LEVEL': 'debug'}),
-            ),
-            Environment(
-                name='qa',
-                display_name='QA',
-                base_url='https://qa.example.com',
-                description='QA testing environment',
-                is_active=True,
-                variables=json.dumps({'DEBUG': 'false', 'LOG_LEVEL': 'info'}),
-            ),
-            Environment(
-                name='staging',
-                display_name='Staging',
-                base_url='https://staging.example.com',
-                description='Pre-production staging environment',
-                is_active=True,
-                variables=json.dumps({'DEBUG': 'false', 'LOG_LEVEL': 'warning'}),
-            ),
-            Environment(
-                name='production',
-                display_name='Production',
-                base_url='https://app.example.com',
-                description='Live production environment',
-                is_active=True,
-                variables=json.dumps({'DEBUG': 'false', 'LOG_LEVEL': 'error'}),
-            ),
-        ]
-        db.session.add_all(environments)
+        db.session.add_all([
+            Environment(name='development', display_name='Development', base_url='http://localhost:3000', description='Local dev', is_active=True, variables=json.dumps({'DEBUG': 'true'})),
+            Environment(name='qa', display_name='QA', base_url='https://qa.example.com', description='QA testing', is_active=True, variables=json.dumps({'DEBUG': 'false'})),
+            Environment(name='staging', display_name='Staging', base_url='https://staging.example.com', description='Pre-prod', is_active=True, variables=json.dumps({'DEBUG': 'false'})),
+            Environment(name='production', display_name='Production', base_url='https://app.example.com', description='Live', is_active=True, variables=json.dumps({'DEBUG': 'false'})),
+        ])
 
     db.session.commit()
