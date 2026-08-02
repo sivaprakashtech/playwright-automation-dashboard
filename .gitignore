@@ -4,6 +4,7 @@ frontend/node_modules/
 
 # Build outputs
 frontend/dist/
+backend/static/
 backend/instance/
 *.pyc
 __pycache__/

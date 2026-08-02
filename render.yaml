@@ -1,9 +1,16 @@
-# Render Blueprint - Backend Service
+# Render Blueprint - Full Stack Deployment
+# Deploys backend + builds frontend into static/
 services:
   - type: web
-    name: playwright-dashboard-api
+    name: playwright-dashboard
     runtime: python
-    buildCommand: pip install -r requirements.txt
+    rootDir: backend
+    buildCommand: |
+      pip install -r requirements.txt &&
+      cd ../frontend &&
+      npm ci &&
+      npm run build &&
+      cp -r dist ../backend/static
     startCommand: gunicorn run:app --bind 0.0.0.0:$PORT --workers 4 --timeout 120
     envVars:
       - key: FLASK_ENV
@@ -16,9 +23,11 @@ services:
         value: sqlite:///instance/dashboard.db
       - key: PYTHON_VERSION
         value: "3.11.0"
+      - key: NODE_VERSION
+        value: "18.19.0"
     disk:
       name: dashboard-data
-      mountPath: /opt/render/project/src/instance
+      mountPath: /opt/render/project/src/backend/instance
       sizeGB: 1
     healthCheckPath: /health
     autoDeploy: true
