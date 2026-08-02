@@ -1,15 +1,11 @@
-# Render Blueprint - Full Stack (React + Flask)
-# No rootDir: runs from repository root so both frontend/ and backend/ are accessible
+# Render Blueprint - Playwright Automation Dashboard
+# Full-stack: React frontend served by Flask backend
 services:
   - type: web
     name: playwright-dashboard
     runtime: python
     plan: free
-    buildCommand: |
-      cd backend && pip install -r requirements.txt &&
-      cd ../frontend && npm ci && npm run build &&
-      rm -rf ../backend/static &&
-      cp -r dist ../backend/static
+    buildCommand: chmod +x build.sh && ./build.sh
     startCommand: cd backend && gunicorn run:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
     envVars:
       - key: FLASK_ENV

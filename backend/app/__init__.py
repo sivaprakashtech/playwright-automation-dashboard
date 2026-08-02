@@ -81,23 +81,17 @@ def create_app(config_name: str = None) -> Flask:
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def serve_react(path):
-        """Serve React SPA. Static files are served by Flask's built-in static handler."""
-        from flask import send_from_directory
-        # If the path matches an actual file in static/, serve it
+        """Serve React SPA with client-side routing support."""
+        from flask import send_from_directory, abort
+        # Serve actual file if it exists (JS, CSS, images)
         if path and os.path.isfile(os.path.join(_static_folder, path)):
             return send_from_directory(_static_folder, path)
-        # Otherwise serve index.html for React Router
+        # SPA fallback: always serve index.html for React Router
         index = os.path.join(_static_folder, 'index.html')
         if os.path.isfile(index):
             return send_from_directory(_static_folder, 'index.html')
-        # Development mode: no static build available
-        from flask import jsonify
-        return jsonify({
-            'message': 'Playwright Dashboard API',
-            'health': '/health',
-            'api': '/api/',
-            'note': 'Frontend not built. Run: cd frontend && npm run build && copy dist to backend/static',
-        }), 200
+        # If static folder is missing entirely, return 503
+        abort(503, description='Frontend build not available. Deployment may be incomplete.')
 
     # Create tables and seed data
     with app.app_context():

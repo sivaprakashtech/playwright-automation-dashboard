@@ -125,7 +125,7 @@ jobs:
           sleep 5
           curl -f http://localhost:5000/api/auth/login -X POST \
             -H "Content-Type: application/json" \
-            -d '{"username":"admin","password":"admin123"}' || exit 1
+            -d '{"username":"admin","password":"1231231234"}' || exit 1
           docker stop test-app
           docker rm test-app
 
